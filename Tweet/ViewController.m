@@ -91,30 +91,37 @@
     //Facbook UI Alert Action
     UIAlertAction *facebookAction = [UIAlertAction actionWithTitle:@"Post to facebook" style:UIAlertActionStyleDefault handler:
                                   ^(UIAlertAction *action){
-                                      if( [ SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) {
-                                          
+                                      if([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) {
                                           //Generating the connection with Facebook and Creating Facebook view
                                           SLComposeViewController *facebookVC = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
                                           
                                           [facebookVC setInitialText:self.tweetTextView.text];
                                           [self presentViewController:facebookVC animated:YES completion:nil];
-                                      
                                       }
                                           else{
                                               [self showAlertMessage:@"Please sign in to facebook."];
                                           }
                                   }
                                      ];
+    UIAlertAction *moreAction = [UIAlertAction actionWithTitle:@"more" style:UIAlertActionStyleDefault handler:
+                                     ^(UIAlertAction *action){
+                                         UIActivityViewController *moreVC =
+                                         [[UIActivityViewController alloc] initWithActivityItems:@[self.tweetTextView.text] applicationActivities:nil];
+                                         
+                                         [self presentViewController:moreVC animated:YES completion:nil];
+                                     }
+                                     ];
     
-    // addition of Facebook action to the actionController
+    
+    
+    // addition of all the action to the actionController
+    
     [actionController addAction:facebookAction];
-    
-    
-    // addition of Tweet action to the actionController
     [actionController addAction:tweetAction];
-    
-    //addition of cancelAction to the actionController
+    [actionController addAction:moreAction];
     [actionController addAction:cancelAction];
+    
+    
     
                                    
     //Calling the pop-up
