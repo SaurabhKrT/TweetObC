@@ -12,6 +12,7 @@
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet UITextView *tweetTextView;
 - (void) configureTweetTextView;
+- (void) showAlertMessage: (NSString *) myMessage;
 
 @end
 
@@ -27,6 +28,18 @@
     
 }
 
+//Function for Aler t message
+- (void) showAlertMessage: (NSString *) myMessage{
+    UIAlertController *alertController;
+    alertController = [UIAlertController alertControllerWithTitle:@"TwitterShare" message:myMessage preferredStyle:UIAlertControllerStyleAlert];
+    
+    //ADDED a button for Alert message
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:nil]];
+    
+    [self presentViewController:alertController animated:YES completion:nil];
+    
+}
+
 
 - (IBAction)showShareAction:(id)sender {
 
@@ -38,13 +51,47 @@
     
     
     //Addition of a pop-up object
-    UIAlertController *actionController = [UIAlertController alertControllerWithTitle:@"Test Title" message:@"Tweet your note." preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *actionController = [UIAlertController alertControllerWithTitle:@"" message:@"Tweet your note." preferredStyle:UIAlertControllerStyleAlert];
     
     
-    //Cancelling the pop-up
+    //Cancell Action
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:nil];
     
-    //addition to the actionController 
+    //Tweet Action
+    UIAlertAction *tweetAction = [UIAlertAction actionWithTitle:@"Tweet" style:UIAlertActionStyleDefault handler:
+                                  ^(UIAlertAction *action){
+                                      if( [ SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
+                                          
+                                         //Generating the connection with twitter and Creating twitter view
+                                          SLComposeViewController *twitterVC = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+                                          
+                                          //Tweet the text if Text is less than 140 character
+                                          if ([self.tweetTextView.text length] < 140){
+                                              [twitterVC setInitialText:self.tweetTextView.text];
+                                          }
+                                          //Else select only 140 characters and add to twitterVC
+                                          else{
+                                              NSString *shortText = [self.tweetTextView.text substringToIndex:140];
+                                              [twitterVC setInitialText:shortText];
+                                              
+                                          }
+                                          
+                                          [self presentViewController:twitterVC animated:YES completion:nil];
+                                      }
+                                      
+                                          else {
+                                          //Alert the user
+                                          [self showAlertMessage: @"Please sign in to twitter"];
+                                      }
+                                  }
+                                  
+                                  
+                                  ];
+    
+    // addition of Tweet action to the actionController
+    [actionController addAction:tweetAction];
+    
+    //addition of cancelAction to the actionController
     [actionController addAction:cancelAction];
     
                                    
