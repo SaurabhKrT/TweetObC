@@ -28,10 +28,10 @@
     
 }
 
-//Function for Aler t message
+//Function for Alert message
 - (void) showAlertMessage: (NSString *) myMessage{
     UIAlertController *alertController;
-    alertController = [UIAlertController alertControllerWithTitle:@"TwitterShare" message:myMessage preferredStyle:UIAlertControllerStyleAlert];
+    alertController = [UIAlertController alertControllerWithTitle:@"Sharing" message:myMessage preferredStyle:UIAlertControllerStyleAlert];
     
     //ADDED a button for Alert message
     [alertController addAction:[UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:nil]];
@@ -51,13 +51,13 @@
     
     
     //Addition of a pop-up object
-    UIAlertController *actionController = [UIAlertController alertControllerWithTitle:@"" message:@"Tweet your note." preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *actionController = [UIAlertController alertControllerWithTitle:@"" message:@"Share your note!" preferredStyle:UIAlertControllerStyleAlert];
     
     
     //Cancell Action
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:nil];
     
-    //Tweet Action
+    //Tweet UI Alert Action
     UIAlertAction *tweetAction = [UIAlertAction actionWithTitle:@"Tweet" style:UIAlertActionStyleDefault handler:
                                   ^(UIAlertAction *action){
                                       if( [ SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
@@ -87,6 +87,28 @@
                                   
                                   
                                   ];
+    
+    //Facbook UI Alert Action
+    UIAlertAction *facebookAction = [UIAlertAction actionWithTitle:@"Post to facebook" style:UIAlertActionStyleDefault handler:
+                                  ^(UIAlertAction *action){
+                                      if( [ SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) {
+                                          
+                                          //Generating the connection with Facebook and Creating Facebook view
+                                          SLComposeViewController *facebookVC = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+                                          
+                                          [facebookVC setInitialText:self.tweetTextView.text];
+                                          [self presentViewController:facebookVC animated:YES completion:nil];
+                                      
+                                      }
+                                          else{
+                                              [self showAlertMessage:@"Please sign in to facebook."];
+                                          }
+                                  }
+                                     ];
+    
+    // addition of Facebook action to the actionController
+    [actionController addAction:facebookAction];
+    
     
     // addition of Tweet action to the actionController
     [actionController addAction:tweetAction];
